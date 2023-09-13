@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>基于单神经元的PID控制 | Aavin&#39;s blog</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    <link rel="icon" href="/egg.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/egg.png">
+    <link rel="mask-icon" href="/bg.svg" color="#3eaf7c">
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?xxxxxxxxxxxxxxxxxxxx"; 
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();</script>
+    <meta name="description" content="">
+    <meta name="theme-color" content="#3eaf7c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="msapplication-TileImage" content="/egg.png">
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta name="keywords" content="Aavin,博客,conimi,nico">
+    
+    <link rel="preload" href="/assets/css/0.styles.0474e23b.css" as="style"><link rel="preload" href="/assets/js/app.7562fe1d.js" as="script"><link rel="preload" href="/assets/js/3.9f83703d.js" as="script"><link rel="preload" href="/assets/js/1.37c29b95.js" as="script"><link rel="preload" href="/assets/js/11.db329df4.js" as="script"><link rel="preload" href="/assets/js/16.170be8d2.js" as="script"><link rel="prefetch" href="/assets/js/10.023ac5e0.js"><link rel="prefetch" href="/assets/js/12.81218ff5.js"><link rel="prefetch" href="/assets/js/13.9fa48958.js"><link rel="prefetch" href="/assets/js/14.63184c91.js"><link rel="prefetch" href="/assets/js/15.88b47c89.js"><link rel="prefetch" href="/assets/js/17.d0f22d22.js"><link rel="prefetch" href="/assets/js/18.5fe890ec.js"><link rel="prefetch" href="/assets/js/19.900f91d0.js"><link rel="prefetch" href="/assets/js/20.36b5239f.js"><link rel="prefetch" href="/assets/js/21.2f8b3162.js"><link rel="prefetch" href="/assets/js/22.5c435efd.js"><link rel="prefetch" href="/assets/js/23.92de4ab3.js"><link rel="prefetch" href="/assets/js/24.0e85461f.js"><link rel="prefetch" href="/assets/js/25.845e0357.js"><link rel="prefetch" href="/assets/js/26.de966fad.js"><link rel="prefetch" href="/assets/js/27.95b0c99d.js"><link rel="prefetch" href="/assets/js/28.f5a033a8.js"><link rel="prefetch" href="/assets/js/29.90608871.js"><link rel="prefetch" href="/assets/js/30.cb3e9f42.js"><link rel="prefetch" href="/assets/js/31.a6a91589.js"><link rel="prefetch" href="/assets/js/32.c2f9fda0.js"><link rel="prefetch" href="/assets/js/33.f85f7981.js"><link rel="prefetch" href="/assets/js/34.bd614d76.js"><link rel="prefetch" href="/assets/js/35.10054677.js"><link rel="prefetch" href="/assets/js/36.d60dfc50.js"><link rel="prefetch" href="/assets/js/37.54c0dd3c.js"><link rel="prefetch" href="/assets/js/38.a111b9a8.js"><link rel="prefetch" href="/assets/js/39.979cf0fc.js"><link rel="prefetch" href="/assets/js/4.6e27e86e.js"><link rel="prefetch" href="/assets/js/40.ba0a7154.js"><link rel="prefetch" href="/assets/js/41.1e63b29e.js"><link rel="prefetch" href="/assets/js/42.f8a90803.js"><link rel="prefetch" href="/assets/js/43.11adf18f.js"><link rel="prefetch" href="/assets/js/44.1d3e67c6.js"><link rel="prefetch" href="/assets/js/45.a0ebcb9c.js"><link rel="prefetch" href="/assets/js/46.9bbca23c.js"><link rel="prefetch" href="/assets/js/5.d7d66890.js"><link rel="prefetch" href="/assets/js/6.6e69b93a.js"><link rel="prefetch" href="/assets/js/7.8b4bf124.js"><link rel="prefetch" href="/assets/js/8.60ee857e.js"><link rel="prefetch" href="/assets/js/9.ee70221a.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.0474e23b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container no-sidebar" data-v-7dd95ae2><div data-v-7dd95ae2><div class="password-shadow password-wrapper-out" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>Aavin's blog</h3> <p class="description" data-v-59e6cb88></p> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>Aavin</span>
+          
+        <span data-v-59e6cb88>2021 - </span>
+        2023
+      </a></span></div></div> <div class="hide" data-v-7dd95ae2><header class="navbar" data-v-7dd95ae2><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><img src="/egg.png" alt="Aavin's blog" class="logo"> <span class="site-name">Aavin's blog</span></a> <div class="links"><div class="color-picker"><a class="color-button"><i class="iconfont reco-color"></i></a> <div class="color-picker-menu" style="display:none;"><div class="mode-options"><h4 class="title">Choose mode</h4> <ul class="color-mode-options"><li class="dark">dark</li><li class="auto active">auto</li><li class="light">light</li></ul></div></div></div> <div class="search-box"><i class="iconfont reco-search"></i> <input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/前端笔记/" class="nav-link"><i class="undefined"></i>
+  前端笔记
+</a></li><li class="dropdown-item"><!----> <a href="/categories/博客搭建/" class="nav-link"><i class="undefined"></i>
+  博客搭建
+</a></li><li class="dropdown-item"><!----> <a href="/categories/学习文档/" class="nav-link"><i class="undefined"></i>
+  学习文档
+</a></li><li class="dropdown-item"><!----> <a href="/categories/后端笔记/" class="nav-link"><i class="undefined"></i>
+  后端笔记
+</a></li><li class="dropdown-item"><!----> <a href="/categories/学习路线/" class="nav-link"><i class="undefined"></i>
+  学习路线
+</a></li><li class="dropdown-item"><!----> <a href="/categories/前端工具/" class="nav-link"><i class="undefined"></i>
+  前端工具
+</a></li><li class="dropdown-item"><!----> <a href="/categories/控制/" class="nav-link"><i class="undefined"></i>
+  控制
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      文档
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/documents/frontend.html" class="nav-link"><i class="undefined"></i>
+  前端文档
+</a></li><li class="dropdown-item"><!----> <a href="/documents/backend.html" class="nav-link"><i class="undefined"></i>
+  后端文档
+</a></li></ul></div></div><div class="nav-item"><a href="/notes/other/.html" class="nav-link"><i class="iconfont reco-blog"></i>
+  面试
+</a></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  归档
+</a></div><div class="nav-item"><a href="/pages/msg.html" class="nav-link"><i class="iconfont reco-suggestion"></i>
+  留言
+</a></div><div class="nav-item"><a href="https://github.com/Vueu/vuepress-app" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="/pages/test.html" class="nav-link"><i class="iconfont reco-faq"></i>
+  测试
+</a></div><div class="nav-item"><a href="/pages/about.html" class="nav-link"><i class="iconfont reco-account"></i>
+  关于
+</a></div> <!----></nav></div></header> <div class="sidebar-mask" data-v-7dd95ae2></div> <aside class="sidebar" data-v-7dd95ae2><div class="personal-info-wrapper" data-v-1fad0c41 data-v-7dd95ae2><img src="/avatar.jpg" alt="author-avatar" class="personal-img" data-v-1fad0c41> <h3 class="name" data-v-1fad0c41>
+    Aavin
+  </h3> <div class="num" data-v-1fad0c41><div data-v-1fad0c41><h3 data-v-1fad0c41>29</h3> <h6 data-v-1fad0c41>文章</h6></div> <div data-v-1fad0c41><h3 data-v-1fad0c41>30</h3> <h6 data-v-1fad0c41>标签</h6></div></div> <ul class="social-links" data-v-1fad0c41><li class="social-item" data-v-1fad0c41><i class="iconfont reco-github" style="color:#3498db;" data-v-1fad0c41></i></li><li class="social-item" data-v-1fad0c41><i class="iconfont reco-zhihu" style="color:#3498db;" data-v-1fad0c41></i></li><li class="social-item" data-v-1fad0c41><i class="iconfont reco-wechat" style="color:#67cc86;" data-v-1fad0c41></i></li><li class="social-item" data-v-1fad0c41><i class="iconfont reco-bilibili" style="color:#f8b26a;" data-v-1fad0c41></i></li></ul> <hr data-v-1fad0c41></div> <nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link"><i class="iconfont reco-home"></i>
+  主页
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-category"></i>
+      分类
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/categories/前端笔记/" class="nav-link"><i class="undefined"></i>
+  前端笔记
+</a></li><li class="dropdown-item"><!----> <a href="/categories/博客搭建/" class="nav-link"><i class="undefined"></i>
+  博客搭建
+</a></li><li class="dropdown-item"><!----> <a href="/categories/学习文档/" class="nav-link"><i class="undefined"></i>
+  学习文档
+</a></li><li class="dropdown-item"><!----> <a href="/categories/后端笔记/" class="nav-link"><i class="undefined"></i>
+  后端笔记
+</a></li><li class="dropdown-item"><!----> <a href="/categories/学习路线/" class="nav-link"><i class="undefined"></i>
+  学习路线
+</a></li><li class="dropdown-item"><!----> <a href="/categories/前端工具/" class="nav-link"><i class="undefined"></i>
+  前端工具
+</a></li><li class="dropdown-item"><!----> <a href="/categories/控制/" class="nav-link"><i class="undefined"></i>
+  控制
+</a></li></ul></div></div><div class="nav-item"><a href="/tag/" class="nav-link"><i class="iconfont reco-tag"></i>
+  标签
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><a class="dropdown-title"><span class="title"><i class="iconfont reco-document"></i>
+      文档
+    </span> <span class="arrow right"></span></a> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/documents/frontend.html" class="nav-link"><i class="undefined"></i>
+  前端文档
+</a></li><li class="dropdown-item"><!----> <a href="/documents/backend.html" class="nav-link"><i class="undefined"></i>
+  后端文档
+</a></li></ul></div></div><div class="nav-item"><a href="/notes/other/.html" class="nav-link"><i class="iconfont reco-blog"></i>
+  面试
+</a></div><div class="nav-item"><a href="/timeline/" class="nav-link"><i class="iconfont reco-date"></i>
+  归档
+</a></div><div class="nav-item"><a href="/pages/msg.html" class="nav-link"><i class="iconfont reco-suggestion"></i>
+  留言
+</a></div><div class="nav-item"><a href="https://github.com/Vueu/vuepress-app" target="_blank" rel="noopener noreferrer" class="nav-link external"><i class="iconfont reco-github"></i>
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div><div class="nav-item"><a href="/pages/test.html" class="nav-link"><i class="iconfont reco-faq"></i>
+  测试
+</a></div><div class="nav-item"><a href="/pages/about.html" class="nav-link"><i class="iconfont reco-account"></i>
+  关于
+</a></div> <!----></nav> <!----> </aside> <div class="password-shadow password-wrapper-in" style="display:none;" data-v-59e6cb88 data-v-7dd95ae2><h3 class="title" data-v-59e6cb88>基于单神经元的PID控制</h3> <!----> <label id="box" class="inputBox" data-v-59e6cb88><input type="password" value="" data-v-59e6cb88> <span data-v-59e6cb88>Konck! Knock!</span> <button data-v-59e6cb88>OK</button></label> <div class="footer" data-v-59e6cb88><span data-v-59e6cb88><i class="iconfont reco-theme" data-v-59e6cb88></i> <a target="blank" href="https://vuepress-theme-reco.recoluan.com" data-v-59e6cb88>vuePress-theme-reco</a></span> <span data-v-59e6cb88><i class="iconfont reco-copyright" data-v-59e6cb88></i> <a data-v-59e6cb88><span data-v-59e6cb88>Aavin</span>
+          
+        <span data-v-59e6cb88>2021 - </span>
+        2023
+      </a></span></div></div> <div data-v-7dd95ae2><div data-v-7dd95ae2><main class="page" style="padding-right:0;"><section style="display:;"><div class="page-title"><h1 class="title">基于单神经元的PID控制</h1> <div data-v-8a445198><i class="iconfont reco-account" data-v-8a445198><span data-v-8a445198>Aavin</span></i> <i class="iconfont reco-date" data-v-8a445198><span data-v-8a445198>2022/10/22</span></i> <i class="iconfont reco-eye" data-v-8a445198><span id="/notes/other/PID.html" data-flag-title="Your Article Title" class="leancloud-visitors" data-v-8a445198><a class="leancloud-visitors-count" style="font-size:.9rem;font-weight:normal;color:#999;"></a></span></i> <i class="tags iconfont reco-tag" data-v-8a445198><span class="tag-item" data-v-8a445198>神经元</span></i></div></div> <div class="theme-reco-content content__default"><div id="boxx" data-v-f4ca0dac><div data-v-f4ca0dac><p v-if="true" class="custom-block-title" data-v-f4ca0dac></p> <p v-if="true" data-v-f4ca0dac></p></div></div> <h4 id="_1-神经元"><a href="#_1-神经元" class="header-anchor">#</a> 1 神经元</h4> <p>​		单神经元作为构成神经网络的基本单位，具有自学习和自适应能力，且结构简单响应速 度快。这里将单个神经元与传统 PID 控制器结合起来，一定程度上解决了传统 PID 调节器不易在线实时整定参数，难以对复杂过程和时变系统参数进行有效控制等问题。人工神经元模型如图1所示，可以看出神经元是一个多输入单输出且具有阈值、权值的非线性处理元件。神经元突触可与其他神经元相连接，或反映外界环境信息，也可以反馈自身信息，通过调整权值得到新的输出。
+$$
+net_i = \sum_jw_{ij}x_j +s_j - \theta_i \
+u_i = f(net_i)
+$$
+<img src="/assets/img/1.01fdc3a7.png" alt=" "></p> <center>图1.1 人工神经元模型</center> <h4 id="_2-单神经元-pid-控制"><a href="#_2-单神经元-pid-控制" class="header-anchor">#</a> 2 单神经元 PID 控制</h4> <h5 id="_2-1-单神经元-pid控制器的设计"><a href="#_2-1-单神经元-pid控制器的设计" class="header-anchor">#</a> 2.1 单神经元 PID控制器的设计</h5> <p>​		用单个神经元实现的自适应 PID 控制的结构框图如图2.1所示。</p> <p><img src="/assets/img/2.d2ce85df.png" alt=" "></p> <center>图2.1 单神经元自适应 PID 控制的结构框图</center> <p>​		图中$Y_r$为设定值，$Y$为给定值，通过状态转换器得到$x_i (t)(i = 1,2,3) $作为神经元输入的三个状态量，通过学习调节神经元权值 $w_i(t)(i = 1,2,3)$最终得到输出。神经元的输入输出关系描述为:
+$$
+I = \sum_{i=1}^{3}w_ix_i   ......(2.1) \
+y = f(I)..........(2.2)
+$$
+​		由PID控制器的增量算式$\Delta u = K_P[e(k)-e(k-1)]+K_ie(k)+K_D[e(k)-2e(k-1)+e(k-1)]...(2.3)$，若取$X_1 = e(k)-e(k-1), X_2 = e(k), X_3 = e(k)-2e(k-1)+e(k-1)$，则式变为$\Delta u = w_1[e(k)-e(k-1)]+w_2e(k)+W_3[e(k)-2e(k-1)+e(k-1)]...(2.3)$，比较式(2-3) 和(2-4) 形式完全相同，所不同的只是式(2-4) 中的系数$w_i(t)(t=1,2,3)$，可以通过神经元的自学习功能来进行自适应调整，而式(2-3) 中的参数$K_P, K_I, K_D$是预先确定好且不变的。正是由于$w_i$能进行自适应调整，故可大大提高控制器的鲁棒性能。</p> <p>​		与常规PID控制器相比较，无需进行精确的系统建模，对具有不确定性因素的系统，其控制品质明显优于常规PID控制器。从后面的仿真分析中可以验证这一结论。其中，神经元的学习功能是通过改变权系数$w_i$来实现的，学习算法即是如何调整$w_i$规则，它是神经元控制的核心，反映了学习方式与学习功能。神经网络的工作过程主要由两个阶段组成，一个阶段是工作期，此时，各连接权值固定，计算单元的状态变化，以求达到稳定状态。另一个阶段是学习期，此时可以对连接权值进行修改。</p> <h5 id="_2-2神经元-pid-学习算法"><a href="#_2-2神经元-pid-学习算法" class="header-anchor">#</a> 2.2神经元 PID 学习算法</h5> <p>​		神经元的学习功能是通过改变权系数$w$来实现的，学习算法即是如何调整$w$的规则，它是神经元控制器的核心，反映了学习方式和学习能力。如何调整$w$对整个控制系统抗干
+扰能力和自适应性能都有很大的影响。
+权值$w_i(k)$的修改学习规则如下:
+$$
+\left{<br>
+\begin{array}{<strong>lr</strong>}<br>
+w_1(k+1) = w_1(k) + \eta_Pu(k)e(k)x_1(k), &amp;  \<br>
+w_2(k+1) = w_2(k) + \eta_Iu(k)e(k)x_2(k), \<br>
+w_3(k+1) = w_3(k) + \eta_Du(k)e(k)x_3(k), &amp;<br>
+\end{array}<br>
+\right.
+$$
+​		为了保证学习算法的收敛性和控制的鲁棒性，对上述算法进行规范化处理后可得如下的
+算法：
+$$
+\left{<br>
+\begin{array}{<strong>lr</strong>}<br>
+\Delta u(k) = K\sum_{i}^{3}w_i^{'}(k)x_i(k), &amp;  \<br>
+w_i^{'}(k) =\frac{w_i(k)}{\sum_{i}^{3}w_i(k)}, \<br>
+w_1(k+1) = w_1(k) + \eta_Pu(k)e(k)x_1(k), &amp;  \<br>
+w_2(k+1) = w_2(k) + \eta_Iu(k)e(k)x_2(k), \<br>
+w_3(k+1) = w_3(k) + \eta_Du(k)e(k)x_3(k)<br>
+\end{array}<br>
+\right.
+$$
+其中，$\eta_P,\eta_I,\eta_D$分别为比例、微分、积分的学习速率，$K$为神经元的比例系数$K&gt;0$。</p> <p>这里参数选取的一般规则如下：</p> <p>​		① $K$是系统最敏感的参数。$K$值的变化，相当于$\eta_P,\eta_I,\eta_D$三项同时变化，因此$K$值</p> <p>的选择非常重要，应在第一步先调整$K$。$K$越大，则快速性越好，但超调量大，甚至可能</p> <p>使系统不稳定。当被控对象时延增大时，$K$值必须减少，以保证系统稳定。$K$值选的过小，</p> <p>会使系统的快速性变差。然后根据“② ⑤”项调整规则调整 $\eta_P,\eta_I,\eta_D$。</p> <p>​		②对于阶跃输入，若被控对象产生多次正弦衰减现象，应减少$\eta_P$，其他参数不变。</p> <p>​		③若被控对象响应特性出现上升时间短、超调过大现象，应减少$\eta_I$，其他参数不变。</p> <p>​		④若被控对象上升时间长，增大$\eta_I$又导致超调过大，可适当增加$\eta_P$，其他参数不变。</p> <p>​		⑤在开始调整时，$\eta_D$选择较小值，当调整$\eta_I$和 $\eta_P$，使被控对象具有良好特性时，再逐渐增大$\eta_D$，而其他参数不变，使系统输出基本无波纹。</p> <h4 id="_2-3-实验验证"><a href="#_2-3-实验验证" class="header-anchor">#</a> 2.3 实验验证</h4> <p>​		对输入信号为阶跃信号，采样时间为1ms，被控对象为
+$$
+G_p(s) = \frac{133}{s^2+25s}
+$$
+编写并运行程序，经过调试，得到以下图像。</p> <p><img src="/assets/img/3.aa2300f5.jpg" alt=""></p> <p><img src="/assets/img/4.2c969b6a.jpg" alt=""></p> <h4 id="附件-源码"><a href="#附件-源码" class="header-anchor">#</a> 附件 - 源码</h4> <div class="language-matlab line-numbers-mode"><pre class="language-matlab"><code><span class="token comment">%Single Neural Adaptive PID Controller </span>
+clear all<span class="token punctuation">;</span> 
+close all<span class="token punctuation">;</span> 
+
+ts <span class="token operator">=</span> <span class="token number">0.001</span><span class="token punctuation">;</span>
+
+<span class="token comment">%离散化系统</span>
+sys<span class="token operator">=</span><span class="token function">tf</span><span class="token punctuation">(</span><span class="token number">133</span><span class="token punctuation">,</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">25</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+dsys<span class="token operator">=</span><span class="token function">c2d</span><span class="token punctuation">(</span>sys<span class="token punctuation">,</span>ts<span class="token punctuation">,</span><span class="token string">'z'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">[</span>num<span class="token punctuation">,</span>den<span class="token punctuation">]</span><span class="token operator">=</span><span class="token function">tfdata</span><span class="token punctuation">(</span>dsys<span class="token punctuation">,</span><span class="token string">'v'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">%初始化</span>
+x<span class="token operator">=</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token operator">'</span><span class="token punctuation">;</span> 
+
+<span class="token comment">%------------------第一套系数--------------------------%</span>
+<span class="token comment">%初始化学习率</span>
+xiteP<span class="token operator">=</span><span class="token number">4.0</span><span class="token punctuation">;</span>      <span class="token comment">%第65行用到</span>
+xiteI<span class="token operator">=</span><span class="token number">0.09</span><span class="token punctuation">;</span>     <span class="token comment">%66</span>
+xiteD<span class="token operator">=</span><span class="token number">1.1</span><span class="token punctuation">;</span>      <span class="token comment">%67</span>
+
+<span class="token comment">%神经元的比例系数</span>
+K<span class="token operator">=</span><span class="token number">2000</span><span class="token punctuation">;</span>         <span class="token comment">%80</span>
+
+<span class="token comment">%------------------第二套系数--------------------------% </span>
+<span class="token comment">%多行注释</span>
+<span class="token comment">%{ </span>
+xiteP<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">;</span>      
+xiteI<span class="token operator">=</span><span class="token number">0.089</span><span class="token punctuation">;</span>     
+xiteD<span class="token operator">=</span><span class="token number">1.5</span><span class="token punctuation">;</span>      
+K<span class="token operator">=</span><span class="token number">1000</span><span class="token punctuation">;</span>
+<span class="token comment">%}</span>
+
+<span class="token comment">%------------------第三套系数--------------------------% </span>
+<span class="token comment">%{  </span>
+xiteP<span class="token operator">=</span><span class="token number">1.9</span><span class="token punctuation">;</span>      
+xiteI<span class="token operator">=</span><span class="token number">0.088</span><span class="token punctuation">;</span>     
+xiteD<span class="token operator">=</span><span class="token number">1.9</span><span class="token punctuation">;</span>      
+K<span class="token operator">=</span><span class="token number">500</span><span class="token punctuation">;</span>
+<span class="token comment">%}</span>
+
+<span class="token comment">%------K越大，系统快速性越好，但增加系统不稳定性-------%</span>
+<span class="token comment">%{  </span>
+xiteP<span class="token operator">=</span><span class="token number">0.001</span><span class="token punctuation">;</span>      
+xiteI<span class="token operator">=</span><span class="token number">0.001</span><span class="token punctuation">;</span>     
+xiteD<span class="token operator">=</span><span class="token number">0.001</span><span class="token punctuation">;</span>      
+K<span class="token operator">=</span><span class="token number">4000</span><span class="token punctuation">;</span>
+<span class="token comment">%}</span>
+
+<span class="token comment">%初始化 pid 权值</span>
+wkp_1<span class="token operator">=</span><span class="token number">0.10</span><span class="token punctuation">;</span> 
+wki_1<span class="token operator">=</span><span class="token number">0.10</span><span class="token punctuation">;</span> 
+wkd_1<span class="token operator">=</span><span class="token number">0.10</span><span class="token punctuation">;</span> 
+error_1<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> 
+error_2<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> 
+y_1<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>y_2<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>    
+u_1<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>u_2<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>    
+
+<span class="token comment">%ts=0.001;    %采样时间</span>
+<span class="token keyword">for</span> k<span class="token operator">=</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">500</span> <span class="token comment">%采样次数</span>
+    
+    <span class="token function">time</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span>k<span class="token operator">*</span>ts<span class="token punctuation">;</span> 
+    <span class="token function">r</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span>    <span class="token comment">%阶跃信号</span>
+                                                                                                                                                                                                            
+    <span class="token comment">%被控模型</span>
+    <span class="token function">y</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span><span class="token operator">-</span><span class="token function">den</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">*</span>y_1<span class="token operator">-</span><span class="token function">den</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token operator">*</span>y_2<span class="token operator">+</span><span class="token function">num</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">*</span>u_1<span class="token operator">+</span><span class="token function">num</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token operator">*</span>u_2<span class="token punctuation">;</span>
+    
+    <span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token function">r</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">-</span><span class="token function">y</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+  
+    <span class="token comment">%对学习算法进行规范化处理</span>
+    <span class="token function">wkp</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span>wkp_1<span class="token operator">+</span>xiteP<span class="token operator">*</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">*</span>u_1<span class="token operator">*</span><span class="token function">x</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">%P</span>
+    <span class="token function">wki</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span>wki_1<span class="token operator">+</span>xiteI<span class="token operator">*</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">*</span>u_1<span class="token operator">*</span><span class="token function">x</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">%I</span>
+    <span class="token function">wkd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span>wkd_1<span class="token operator">+</span>xiteD<span class="token operator">*</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">*</span>u_1<span class="token operator">*</span><span class="token function">x</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">%D </span>
+    
+    <span class="token comment">%比例系数</span>
+    <span class="token function">x</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">-</span>error_1<span class="token punctuation">;</span>           <span class="token comment">%P </span>
+    <span class="token function">x</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span>                   <span class="token comment">%I </span>
+    <span class="token function">x</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">-</span><span class="token number">2</span><span class="token operator">*</span>error_1<span class="token operator">+</span>error_2<span class="token punctuation">;</span> <span class="token comment">%D </span>
+    
+    <span class="token function">wadd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">abs</span><span class="token punctuation">(</span><span class="token function">wkp</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token function">abs</span><span class="token punctuation">(</span><span class="token function">wki</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token function">abs</span><span class="token punctuation">(</span><span class="token function">wkd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    <span class="token function">w11</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">wkp</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">/</span><span class="token function">wadd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    <span class="token function">w22</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">wki</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">/</span><span class="token function">wadd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    <span class="token function">w33</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span><span class="token function">wkd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">/</span><span class="token function">wadd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    w<span class="token operator">=</span><span class="token punctuation">[</span><span class="token function">w11</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">w22</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token function">w33</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span> 
+    
+    <span class="token function">u</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token operator">=</span>K<span class="token operator">*</span>w<span class="token operator">*</span>x<span class="token punctuation">;</span>   <span class="token comment">% ▲u(k) 控制规律</span>
+
+    <span class="token comment">%更新数据</span>
+    error_2<span class="token operator">=</span>error_1<span class="token punctuation">;</span> 
+    error_1<span class="token operator">=</span><span class="token function">error</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    u_2<span class="token operator">=</span>u_1<span class="token punctuation">;</span>u_1<span class="token operator">=</span><span class="token function">u</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    y_2<span class="token operator">=</span>y_1<span class="token punctuation">;</span>y_1<span class="token operator">=</span><span class="token function">y</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    wkp_1<span class="token operator">=</span><span class="token function">wkp</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    wkd_1<span class="token operator">=</span><span class="token function">wkd</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+    wki_1<span class="token operator">=</span><span class="token function">wki</span><span class="token punctuation">(</span>k<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token keyword">end</span> 
+
+<span class="token comment">%输出结果</span>
+<span class="token function">figure</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token function">plot</span><span class="token punctuation">(</span>time<span class="token punctuation">,</span>r<span class="token punctuation">,</span><span class="token string">'b'</span><span class="token punctuation">,</span>time<span class="token punctuation">,</span>y<span class="token punctuation">,</span><span class="token string">'r'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token function">xlabel</span><span class="token punctuation">(</span><span class="token string">'time(s)'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token function">ylabel</span><span class="token punctuation">(</span><span class="token string">'rin,y'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+
+<span class="token comment">%{open </span>
+<span class="token function">figure</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token function">plot</span><span class="token punctuation">(</span>time<span class="token punctuation">,</span>r<span class="token operator">-</span>y<span class="token punctuation">,</span><span class="token string">'g'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token function">xlabel</span><span class="token punctuation">(</span><span class="token string">'time(s)'</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token function">ylabel</span><span class="token punctuation">(</span><span class="token string">'error'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token comment">%}</span>
+</code></pre> <div class="line-numbers-wrapper"><span class="line-number">1</span><br><span class="line-number">2</span><br><span class="line-number">3</span><br><span class="line-number">4</span><br><span class="line-number">5</span><br><span class="line-number">6</span><br><span class="line-number">7</span><br><span class="line-number">8</span><br><span class="line-number">9</span><br><span class="line-number">10</span><br><span class="line-number">11</span><br><span class="line-number">12</span><br><span class="line-number">13</span><br><span class="line-number">14</span><br><span class="line-number">15</span><br><span class="line-number">16</span><br><span class="line-number">17</span><br><span class="line-number">18</span><br><span class="line-number">19</span><br><span class="line-number">20</span><br><span class="line-number">21</span><br><span class="line-number">22</span><br><span class="line-number">23</span><br><span class="line-number">24</span><br><span class="line-number">25</span><br><span class="line-number">26</span><br><span class="line-number">27</span><br><span class="line-number">28</span><br><span class="line-number">29</span><br><span class="line-number">30</span><br><span class="line-number">31</span><br><span class="line-number">32</span><br><span class="line-number">33</span><br><span class="line-number">34</span><br><span class="line-number">35</span><br><span class="line-number">36</span><br><span class="line-number">37</span><br><span class="line-number">38</span><br><span class="line-number">39</span><br><span class="line-number">40</span><br><span class="line-number">41</span><br><span class="line-number">42</span><br><span class="line-number">43</span><br><span class="line-number">44</span><br><span class="line-number">45</span><br><span class="line-number">46</span><br><span class="line-number">47</span><br><span class="line-number">48</span><br><span class="line-number">49</span><br><span class="line-number">50</span><br><span class="line-number">51</span><br><span class="line-number">52</span><br><span class="line-number">53</span><br><span class="line-number">54</span><br><span class="line-number">55</span><br><span class="line-number">56</span><br><span class="line-number">57</span><br><span class="line-number">58</span><br><span class="line-number">59</span><br><span class="line-number">60</span><br><span class="line-number">61</span><br><span class="line-number">62</span><br><span class="line-number">63</span><br><span class="line-number">64</span><br><span class="line-number">65</span><br><span class="line-number">66</span><br><span class="line-number">67</span><br><span class="line-number">68</span><br><span class="line-number">69</span><br><span class="line-number">70</span><br><span class="line-number">71</span><br><span class="line-number">72</span><br><span class="line-number">73</span><br><span class="line-number">74</span><br><span class="line-number">75</span><br><span class="line-number">76</span><br><span class="line-number">77</span><br><span class="line-number">78</span><br><span class="line-number">79</span><br><span class="line-number">80</span><br><span class="line-number">81</span><br><span class="line-number">82</span><br><span class="line-number">83</span><br><span class="line-number">84</span><br><span class="line-number">85</span><br><span class="line-number">86</span><br><span class="line-number">87</span><br><span class="line-number">88</span><br><span class="line-number">89</span><br><span class="line-number">90</span><br><span class="line-number">91</span><br><span class="line-number">92</span><br><span class="line-number">93</span><br><span class="line-number">94</span><br><span class="line-number">95</span><br><span class="line-number">96</span><br><span class="line-number">97</span><br><span class="line-number">98</span><br><span class="line-number">99</span><br><span class="line-number">100</span><br><span class="line-number">101</span><br><span class="line-number">102</span><br><span class="line-number">103</span><br><span class="line-number">104</span><br><span class="line-number">105</span><br><span class="line-number">106</span><br></div></div></div></section> <footer class="page-edit"><!----> <!----></footer> <!----> <div class="comments-wrapper"><!----></div></main></div> <!----></div> <ul class="sub-sidebar sub-sidebar-wrapper" style="width:0;" data-v-b57cc07c data-v-7dd95ae2></ul></div></div></div><div class="global-ui"><div class="back-to-ceiling" style="right:1rem;bottom:6rem;width:2.5rem;height:2.5rem;border-radius:.25rem;line-height:2.5rem;display:none;" data-v-c6073ba8 data-v-c6073ba8><svg t="1574745035067" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5404" class="icon" data-v-c6073ba8><path d="M526.60727968 10.90185116a27.675 27.675 0 0 0-29.21455937 0c-131.36607665 82.28402758-218.69155461 228.01873535-218.69155402 394.07834331a462.20625001 462.20625001 0 0 0 5.36959153 69.94390903c1.00431239 6.55289093-0.34802892 13.13561351-3.76865779 18.80351572-32.63518765 54.11355614-51.75690182 118.55860487-51.7569018 187.94566865a371.06718723 371.06718723 0 0 0 11.50484808 91.98906777c6.53300375 25.50556257 41.68394495 28.14064038 52.69160883 4.22606766 17.37162448-37.73630017 42.14135425-72.50938081 72.80769204-103.21549295 2.18761121 3.04276886 4.15646224 6.24463696 6.40373557 9.22774369a1871.4375 1871.4375 0 0 0 140.04691725 5.34970492 1866.36093723 1866.36093723 0 0 0 140.04691723-5.34970492c2.24727335-2.98310674 4.21612437-6.18497483 6.3937923-9.2178004 30.66633723 30.70611158 55.4360664 65.4791928 72.80769147 103.21549355 11.00766384 23.91457269 46.15860503 21.27949489 52.69160879-4.22606768a371.15156223 371.15156223 0 0 0 11.514792-91.99901164c0-69.36717486-19.13165746-133.82216804-51.75690182-187.92578088-3.42062944-5.66790279-4.76302748-12.26056868-3.76865837-18.80351632a462.20625001 462.20625001 0 0 0 5.36959269-69.943909c-0.00994388-166.08943902-87.32547796-311.81420293-218.6915546-394.09823051zM605.93803103 357.87693858a93.93749974 93.93749974 0 1 1-187.89594924 6.1e-7 93.93749974 93.93749974 0 0 1 187.89594924-6.1e-7z" p-id="5405" data-v-c6073ba8></path><path d="M429.50777625 765.63860547C429.50777625 803.39355007 466.44236686 1000.39046097 512.00932183 1000.39046097c45.56695499 0 82.4922232-197.00623328 82.5015456-234.7518555 0-37.75494459-36.9345906-68.35043303-82.4922232-68.34111062-45.57627738-0.00932239-82.52019037 30.59548842-82.51086798 68.34111062z" p-id="5406" data-v-c6073ba8></path></svg></div><!----><canvas id="vuepress-canvas-cursor"></canvas><div class="kanbanniang" data-v-5775ee02><div class="banniang-container" style="display:;" data-v-5775ee02><div class="messageBox" style="right:68px;bottom:190px;display:none;" data-v-5775ee02>
+      欢迎来到 Aavin's blog
+    </div> <div class="operation" style="right:90px;bottom:40px;display:none;" data-v-5775ee02><i class="kbnfont kbn-ban-home ban-home" data-v-5775ee02></i> <i class="kbnfont kbn-ban-message message" data-v-5775ee02></i> <i class="kbnfont kbn-ban-close close" data-v-5775ee02></i> <a target="_blank" href="https://vuepress-theme-reco.recoluan.com/views/plugins/kanbanniang.html" data-v-5775ee02><i class="kbnfont kbn-ban-info info" data-v-5775ee02></i></a> <i class="kbnfont kbn-ban-theme skin" style="display:;" data-v-5775ee02></i></div> <canvas id="banniang" width="80" height="150" class="live2d" style="right:30px;bottom:-20px;opacity:0.8;" data-v-5775ee02></canvas></div> <div class="showBanNiang" style="display:none;" data-v-5775ee02>
+    看板娘
+  </div></div></div></div>
+    <script src="/assets/js/app.7562fe1d.js" defer></script><script src="/assets/js/3.9f83703d.js" defer></script><script src="/assets/js/1.37c29b95.js" defer></script><script src="/assets/js/11.db329df4.js" defer></script><script src="/assets/js/16.170be8d2.js" defer></script>
+  </body>
+</html>
